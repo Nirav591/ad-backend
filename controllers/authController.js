@@ -63,7 +63,7 @@ const forgotPasswordRequest = async (req, res) => {
     }
 };
 
-const resetPassword  = async (req, res) => {
+const resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
 
     try {
@@ -82,4 +82,4 @@ const resetPassword  = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin, forgotPasswordRequest, resetPassword  };
+module.exports = { signup, signin, forgotPasswordRequest, resetPassword };
