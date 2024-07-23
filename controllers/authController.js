@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
-const { createUser, findUserByEmailOrUsername, updateUserPassword , updateUserRole, findUserById} = require('../models/userModel');
-const { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail } = require('../models/otpModel');
-const { generateToken } = require('../utils/tokenUtils');
-const { sendOtpEmail, generateOtp } = require('../utils/emailUtils');
+const { createUser, findUserByEmailOrUsername, updateUserPassword, updateUserRole, findUserById } = require('../models/userModel.js');
+const { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail } = require('../models/otpModel.js');
+const { generateToken } = require('../utils/tokenUtils.js');
+const { sendOtpEmail, generateOtp } = require('../utils/emailUtils.js');
 const { v4: uuidv4 } = require('uuid');
 
 
