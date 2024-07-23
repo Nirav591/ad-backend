@@ -1,11 +1,8 @@
 const bcrypt = require('bcryptjs');
-const { createUser, findUserByEmailOrUsername, updateUserPassword, updateUserRole, findUserById } = require('../models/userModel.js');
-const { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail } = require('../models/otpModel.js');
-const { generateToken } = require('../utils/tokenUtils.js');
-const { sendOtpEmail, generateOtp } = require('../utils/emailUtils.js');
-const { v4: uuidv4 } = require('uuid');
-
-
+const { createUser, findUserByEmailOrUsername, updateUserPassword } = require('../models/userModel');
+const { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail } = require('../models/otpModel');
+const { generateToken } = require('../utils/tokenUtils');
+const { sendOtpEmail, generateOtp } = require('../utils/emailUtils');
 
 const signup = async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body;
@@ -15,11 +12,10 @@ const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userId = uuidv4(); // Generate a unique user ID
-    const newUser = { userId, username, email, password: hashedPassword, role };
+    const newUser = { username, email, password: hashedPassword, role };
     
     try {
-        await createUser(newUser); // Assuming createUser inserts newUser into the database
+        await createUser(newUser);
         const token = generateToken(newUser);
         res.status(201).json({ token });
     } catch (err) {
@@ -86,53 +82,4 @@ const resetPassword = async (req, res) => {
     }
 };
 
-const getUser = async (req, res) => {
-    const userId = req.params.id; // Assuming id is passed as a route parameter
-
-    try {
-        const user = await findUserById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        // Return relevant user details, excluding sensitive information like password
-        res.status(200).json({
-            id: user._id,
-            username: user.username,
-            email: user.email,
-            role: user.role
-            // Add more fields as needed
-        });
-    } catch (err) {
-        console.error('Error fetching user details:', err); // Log the actual error
-        res.status(500).json({ message: 'Failed to fetch user details', error: err.message });
-    }
-};
-
-const updateUser = async (req, res) => {
-    const userId = req.params.id; // Assuming id is passed as a route parameter
-    const { role } = req.body;
-
-    try {
-        const updatedUser = await updateUserRole(userId, role);
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        res.status(200).json({
-            message: 'User role updated successfully',
-            user: {
-                id: updatedUser._id,
-                username: updatedUser.username,
-                email: updatedUser.email,
-                role: updatedUser.role
-                // Add more fields as needed
-            }
-        });
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to update user role', error: err });
-    }
-};
-
-
-module.exports = { signup, signin, forgotPasswordRequest, resetPassword, updateUser , getUser};
+module.exports = { signup, signin, forgotPasswordRequest, resetPassword };
