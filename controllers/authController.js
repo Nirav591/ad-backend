@@ -3,6 +3,8 @@ const { createUser, findUserByEmailOrUsername, updateUserPassword } = require('.
 const { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail } = require('../models/otpModel');
 const { generateToken } = require('../utils/tokenUtils');
 const { sendOtpEmail, generateOtp } = require('../utils/emailUtils');
+const findUserById = require('../models/userModel').findUserById;
+
 
 const signup = async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body;
@@ -82,4 +84,19 @@ const resetPassword = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin, forgotPasswordRequest, resetPassword };
+const getUser = async (req, res) => {
+    const userId = req.params.userId; // Assuming you pass userId as a route parameter
+    
+    try {
+        const user = await findUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching user details', error: err });
+    }
+};
+
+
+module.exports = { signup, signin, forgotPasswordRequest, resetPassword , getUser};

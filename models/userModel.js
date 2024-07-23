@@ -39,4 +39,12 @@ const updateUserById = async (userId, updatedFields) => {
     return result;
 };
 
-module.exports = { createUser, findUserByEmailOrUsername, updateUserPassword, getAllUsers, updateUserById };
+const findUserById = async (userId) => {
+    const [rows] = await db.execute(
+        'SELECT * FROM users WHERE id = ?',
+        [userId]
+    );
+    return rows[0];
+};
+
+module.exports = { createUser, findUserByEmailOrUsername, updateUserPassword, getAllUsers, updateUserById , findUserById};
