@@ -3,6 +3,10 @@ const { createUser, findUserByEmailOrUsername, updateUserPassword } = require('.
 const { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail } = require('../models/otpModel');
 const { generateToken } = require('../utils/tokenUtils');
 const { sendOtpEmail, generateOtp } = require('../utils/emailUtils');
+const { findUserById } = require('../models/userModel');
+const { updateUserRole } = require('../models/userModel');
+
+
 
 const signup = async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body;
@@ -82,4 +86,52 @@ const resetPassword = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin, forgotPasswordRequest, resetPassword };
+const getUser = async (req, res) => {
+    const userId = req.params.id; // Assuming id is passed as a route parameter
+
+    try {
+        const user = await findUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Return relevant user details, excluding sensitive information like password
+        res.status(200).json({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+            // Add more fields as needed
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch user details', error: err });
+    }
+};
+
+const updateUser = async (req, res) => {
+    const userId = req.params.id; // Assuming id is passed as a route parameter
+    const { role } = req.body;
+
+    try {
+        const updatedUser = await updateUserRole(userId, role);
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'User role updated successfully',
+            user: {
+                id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                role: updatedUser.role
+                // Add more fields as needed
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to update user role', error: err });
+    }
+};
+
+
+module.exports = { signup, signin, forgotPasswordRequest, resetPassword, updateUser , getUser};
