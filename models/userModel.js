@@ -25,4 +25,18 @@ const updateUserPassword = async (email, password) => {
     return result;
 };
 
-module.exports = { createUser, findUserByEmailOrUsername, updateUserPassword };
+const getAllUsers = async () => {
+    const [rows] = await db.execute('SELECT * FROM users');
+    return rows;
+};
+
+const updateUserById = async (userId, updatedFields) => {
+    const { username, email, role } = updatedFields;
+    const [result] = await db.execute(
+        'UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?',
+        [username, email, role, userId]
+    );
+    return result;
+};
+
+module.exports = { createUser, findUserByEmailOrUsername, updateUserPassword, getAllUsers, updateUserById };
