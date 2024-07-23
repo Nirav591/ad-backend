@@ -24,4 +24,4 @@ const deleteOtpByEmail = async (email) => {
     return result;
 };
 
-module.exports = { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail };
+module.exports = { createOtp, findOtpByEmailAndOtp, deleteOtpByEmail,  };
