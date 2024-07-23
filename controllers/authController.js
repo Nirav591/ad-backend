@@ -5,6 +5,7 @@ const { generateToken } = require('../utils/tokenUtils');
 const { sendOtpEmail, generateOtp } = require('../utils/emailUtils');
 const { findUserById } = require('../models/userModel');
 const { updateUserRole } = require('../models/userModel');
+const { v4: uuidv4 } = require('uuid');
 
 
 
@@ -16,10 +17,11 @@ const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = { username, email, password: hashedPassword, role };
+    const userId = uuidv4(); // Generate a unique user ID
+    const newUser = { userId, username, email, password: hashedPassword, role };
     
     try {
-        await createUser(newUser);
+        await createUser(newUser); // Assuming createUser inserts newUser into the database
         const token = generateToken(newUser);
         res.status(201).json({ token });
     } catch (err) {
@@ -104,7 +106,8 @@ const getUser = async (req, res) => {
             // Add more fields as needed
         });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to fetch user details', error: err });
+        console.error('Error fetching user details:', err); // Log the actual error
+        res.status(500).json({ message: 'Failed to fetch user details', error: err.message });
     }
 };
 
