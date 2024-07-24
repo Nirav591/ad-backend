@@ -1,14 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-
-const app = express();
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-
-
-
 require('dotenv').config();
+
+const app = express();
 
 // List of allowed origins
 const allowedOrigins = ['http://localhost:3000', 'https://yourproductiondomain.com'];
@@ -29,13 +26,14 @@ const corsOptions = {
 // Use CORS middleware with the defined options
 app.use(cors(corsOptions));
 
-app.use(express.json());
+// Use body-parser middleware
+app.use(bodyParser.json());
 
+// Route middlewares
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-
-const PORT = 6315;
+const PORT = process.env.PORT || 6315;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
