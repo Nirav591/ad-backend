@@ -78,6 +78,8 @@ exports.getAllSuperadmins = (req, res) => {
 exports.requestPasswordReset = (req, res) => {
   const { email } = req.body;
 
+  console.log(email , "email");
+
   Superadmin.findByEmail(email, (err, results) => {
     if (err) {
       return res.status(500).json({ message: "Error finding user", error: err });
