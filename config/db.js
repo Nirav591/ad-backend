@@ -4,7 +4,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'admin',
   password:  't7x?}>rbmCa~we+',
-  database: 'ad_database',
+  database: 'superadmin_db',
 });
 
 db.connect((err) => {
