@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
   auth: {
-    user: "unizeinventiv@gmail.com",
+    user: "79623e001@smtp-brevo.com",
     pass: "HhPTI91mOfkWL4FC",
   },
 });
@@ -101,7 +101,7 @@ exports.requestPasswordReset = (req, res) => {
       const resetUrl = `https://advocate.unize.co.in/reset-password?token=${resetToken}`;
       const mailOptions = {
         to: email,
-        from: "unizeinventiv@gmail.com",
+        from: "79623e001@smtp-brevo.com",
         subject: 'Password Reset Request',
         text: `To reset your password, click the following link: ${resetUrl}`,
       };
