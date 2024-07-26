@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const Superadmin = require('../models/Superadmin');
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
+
 
 
 const transporter = nodemailer.createTransport({
