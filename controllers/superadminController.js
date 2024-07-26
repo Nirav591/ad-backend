@@ -90,7 +90,10 @@ exports.requestPasswordReset = (req, res) => {
     const user = results[0];
     const resetToken = jwt.sign({ email }, "your_reset_password_secret", { expiresIn: '1h' });
 
-    Superadmin.updateResetToken(email, resetToken, Date.now() + parseInt(3600000), (err) => {
+    // Calculate expiration time
+    const expiresIn = new Date(Date.now() + parseInt(36000));
+
+    Superadmin.updateResetToken(email, resetToken, expiresIn, (err) => {
       if (err) {
         return res.status(500).json({ message: "Error updating reset token", error: err });
       }
