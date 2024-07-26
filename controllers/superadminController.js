@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const Superadmin = require('../models/Superadmin');
+const nodemailer = require('nodemailer');
 
 
 const transporter = nodemailer.createTransport({
