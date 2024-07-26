@@ -9,6 +9,10 @@ const Superadmin = {
     const sql = 'UPDATE superadmins SET ? WHERE id = ?';
     db.query(sql, [updatedData, id], callback);
   },
+  getAll: (callback) => {
+    const sql = 'SELECT * FROM superadmins';
+    db.query(sql, callback);
+  },
   // Add more model methods as needed
 };
 

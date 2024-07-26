@@ -50,3 +50,12 @@ exports.updateSuperadmin = (req, res) => {
     res.status(200).json({ message: "Superadmin updated successfully" });
   });
 };
+
+exports.getAllSuperadmins = (req, res) => {
+  Superadmin.getAll((err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "Error fetching superadmins", error: err });
+    }
+    res.status(200).json({ superadmins: results });
+  });
+};
