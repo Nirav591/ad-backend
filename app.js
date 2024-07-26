@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
+const superadminRoutes = require('./routes/superadminRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -30,10 +29,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Route middlewares
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api', superadminRoutes);
 
-const PORT = process.env.PORT || 6315;
+const PORT =  6315;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
