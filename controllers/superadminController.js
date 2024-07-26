@@ -1,61 +1,38 @@
-const bcrypt = require('bcryptjs');
-const Superadmin = require('../models/Superadmin');
+const db = require('../config/db');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-exports.createSuperadmin = (req, res) => {
-  const { name, email, phone, username, password, confirmPassword, plan, added_by } = req.body;
+dotenv.config();
 
-  if (password !== confirmPassword) {
-    return res.status(400).json({ message: "Passwords do not match" });
+const Superadmin = {
+  create: (superadmin, callback) => {
+    const sql = 'INSERT INTO superadmins SET ?';
+    db.query(sql, superadmin, callback);
+  },
+  update: (id, updatedData, callback) => {
+    const sql = 'UPDATE superadmins SET ? WHERE id = ?';
+    db.query(sql, [updatedData, id], callback);
+  },
+  getAll: (callback) => {
+    const sql = 'SELECT * FROM superadmins';
+    db.query(sql, callback);
+  },
+  findByEmail: (email, callback) => {
+    const sql = 'SELECT * FROM superadmins WHERE email = ?';
+    db.query(sql, [email], callback);
+  },
+  findByResetToken: (resetToken, callback) => {
+    const sql = 'SELECT * FROM superadmins WHERE reset_token = ? AND reset_token_expires > NOW()';
+    db.query(sql, [resetToken], callback);
+  },
+  updateResetToken: (email, resetToken, expiresIn, callback) => {
+    const sql = 'UPDATE superadmins SET reset_token = ?, reset_token_expires = ? WHERE email = ?';
+    db.query(sql, [resetToken, expiresIn, email], callback);
+  },
+  updatePassword: (id, password, callback) => {
+    const sql = 'UPDATE superadmins SET password = ? WHERE id = ?';
+    db.query(sql, [password, id], callback);
   }
-
-  const hashedPassword = bcrypt.hashSync(password, 8);
-
-  const newSuperadmin = {
-    name,
-    email,
-    phone,
-    username,
-    password: hashedPassword,
-    plan,
-    added_by,
-    date_added: new Date(),
-  };
-
-  Superadmin.create(newSuperadmin, (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Error creating superadmin", error: err });
-    }
-    res.status(201).json({ message: "Superadmin created successfully", superadminId: result.insertId });
-  });
 };
 
-exports.updateSuperadmin = (req, res) => {
-  const { id } = req.params;
-  const { name, email, phone, username, plan, updated_by } = req.body;
-
-  const updatedData = {
-    name,
-    email,
-    phone,
-    username,
-    plan,
-    updated_by,
-    date_updated: new Date(),
-  };
-
-  Superadmin.update(id, updatedData, (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Error updating superadmin", error: err });
-    }
-    res.status(200).json({ message: "Superadmin updated successfully" });
-  });
-};
-
-exports.getAllSuperadmins = (req, res) => {
-  Superadmin.getAll((err, results) => {
-    if (err) {
-      return res.status(500).json({ message: "Error fetching superadmins", error: err });
-    }
-    res.status(200).json({ superadmins: results });
-  });
-};
+module.exports = Superadmin;
