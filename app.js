@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const superadminRoutes = require('./routes/superadminRoutes');
+const authRoutes = require('./routes/authRoutes');
+
 require('dotenv').config();
 
 const app = express();
@@ -30,6 +32,7 @@ app.use(bodyParser.json());
 
 // Route middlewares
 app.use('/api', superadminRoutes);
+app.use('/api/auth', authRoutes);
 
 const PORT =  6315;
 app.listen(PORT, () => {
