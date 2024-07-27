@@ -2,8 +2,7 @@ const bcrypt = require('bcryptjs');
 const Superadmin = require('../models/Superadmin');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
-
-
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
@@ -14,6 +13,27 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKey = defaultClient.authentications['api-key'];
+apiKey.apiKey = 'YOUR_API_V3_KEY';
+const apiInstance = new SibApiV3Sdk.EmailCampaignsApi();
+
+const createEmailCampaign = () => {
+  let emailCampaigns = new SibApiV3Sdk.CreateEmailCampaign();
+  emailCampaigns.name = "Campaign sent via the API";
+  emailCampaigns.subject = "My subject";
+  emailCampaigns.sender = { "name": "From name", "email": "unizeinventiv@gmail.com" };
+  emailCampaigns.type = "classic";
+  emailCampaigns.htmlContent = 'Congratulations! You successfully sent this example campaign via the Brevo API.';
+  emailCampaigns.recipients = { listIds: [2, 7] };
+  emailCampaigns.scheduledAt = '2023-01-01 00:00:01';
+
+  apiInstance.createEmailCampaign(emailCampaigns).then((data) => {
+    console.log('API called successfully. Returned data: ' + data);
+  }, (error) => {
+    console.error(error);
+  });
+};
 
 exports.createSuperadmin = (req, res) => {
   const { name, email, phone, username, password, confirmPassword, plan, added_by } = req.body;
@@ -40,6 +60,9 @@ exports.createSuperadmin = (req, res) => {
       return res.status(500).json({ message: "Error creating superadmin", error: err });
     }
     res.status(201).json({ message: "Superadmin created successfully", superadminId: result.insertId });
+
+    // Create an email campaign after successfully creating a superadmin
+    createEmailCampaign();
   });
 };
 
@@ -74,11 +97,10 @@ exports.getAllSuperadmins = (req, res) => {
   });
 };
 
-
 exports.requestPasswordReset = (req, res) => {
   const { email } = req.body;
 
-  console.log(email , "email");
+  console.log(email, "email");
 
   Superadmin.findByEmail(email, (err, results) => {
     if (err) {
