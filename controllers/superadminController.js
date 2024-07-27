@@ -3,22 +3,13 @@ const Superadmin = require('../models/Superadmin');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
-
-
 const transporter = nodemailer.createTransport({
-  // host: "smtp.gmail.com",
-  // port: 587,
-  // auth: {
-    // user: "unizeinventiv@gmail.com",
-    // pass: "Unize@5916310",
-  // },
   service: 'gmail',
   auth: {
     user: "unizeinventiv@gmail.com",
     pass: "Unize@5916310",
   }
 });
-
 
 exports.createSuperadmin = (req, res) => {
   const { name, email, phone, username, password, confirmPassword, plan, added_by } = req.body;
@@ -78,7 +69,6 @@ exports.getAllSuperadmins = (req, res) => {
     res.status(200).json({ superadmins: results });
   });
 };
-
 
 exports.requestPasswordReset = (req, res) => {
   const { email } = req.body;
