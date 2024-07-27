@@ -6,12 +6,17 @@ const jwt = require('jsonwebtoken');
 
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
+  // host: "smtp.gmail.com",
+  // port: 587,
+  // auth: {
+    // user: "unizeinventiv@gmail.com",
+    // pass: "Unize@5916310",
+  // },
+  service: 'gmail',
   auth: {
     user: "unizeinventiv@gmail.com",
     pass: "Unize@5916310",
-  },
+  }
 });
 
 
@@ -106,6 +111,7 @@ exports.requestPasswordReset = (req, res) => {
         from: "unizeinventiv@gmail.com",
         subject: 'Password Reset Request',
         text: `To reset your password, click the following link: ${resetUrl}`,
+        html: `<b>To reset your password, click the following link: ${resetUrl}</b>`
       };
 
       transporter.sendMail(mailOptions, (err) => {
