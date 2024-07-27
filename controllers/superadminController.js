@@ -6,11 +6,11 @@ const jwt = require('jsonwebtoken');
 
 
 const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
+  host: "smtp.gmail.com",
   port: 587,
   auth: {
-    user: "79623e001@smtp-brevo.com",
-    pass: "HhPTI91mOfkWL4FC",
+    user: "unizeinventiv@gmail.com",
+    pass: "Unize@5916310",
   },
 });
 
