@@ -2,6 +2,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
+require('dotenv').config();
+
+const transporter = nodemailer.createTransport({
+  host: 465,
+  port: "unize.co.in",
+  secure: true, // use SSL
+  auth: {
+    user: "nirav@unize.co.in",
+    pass: "Nirav@5916310"
+  }
+});
 
 exports.register = (req, res) => {
   const { email, password, confirmPassword, username } = req.body;
@@ -23,19 +34,12 @@ exports.register = (req, res) => {
 
       // Send verification email
       const token = jwt.sign({ email }, "your_jwt_secret", { expiresIn: '1h' });
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: "unizeinventiv@gmail.com",
-          pass: "Unize@5916310"
-        }
-      });
 
       const mailOptions = {
-        from: "unizeinventiv@gmail.com",
+        from: "nirav@unize.co.in",
         to: email,
         subject: 'Verify your email',
-        text: `Click this link to verify your email: https://advocate.unize.co.in/verify-email?token=${token}`
+        text: `Click this link to verify your email: https://advocate.unize.co.in/api/auth/verify-email?token=${token}`
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
@@ -73,19 +77,11 @@ exports.forgotPassword = (req, res) => {
 
     const token = jwt.sign({ email }, "your_jwt_secret", { expiresIn: '1h' });
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: "unizeinventiv@gmail.com",
-        pass: "Unize@5916310"
-      }
-    });
-
     const mailOptions = {
-      from: "unizeinventiv@gmail.com",
+      from: "nirav@unize.co.in",
       to: email,
       subject: 'Reset your password',
-      text: `Click this link to reset your password: https://advocate.unize.co.in/reset-password?token=${token}`
+      text: `Click this link to reset your password: https://advocate.unize.co.in/api/auth/reset-password?token=${token}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
