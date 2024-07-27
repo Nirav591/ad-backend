@@ -65,15 +65,19 @@ exports.forgotPassword = (req, res) => {
     const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'unize.co.in', // SMTP host from your cPanel settings
+      port: 465, // SMTP port for SSL
+      secure: true, // True for port 465
       auth: {
-        user: 'your_email@gmail.com',
-        pass: 'your_email_password'
+        user: 'nirav@unize.co.in', // Your email address
+        pass: 'Nirav@5916310' // Your email password
       }
     });
 
+    console.log(user.email , "user.email");
+
     const mailOptions = {
-      from: 'your_email@gmail.com',
+      from: 'nirav@unize.co.in',
       to: user.email,
       subject: 'Password Reset',
       text: `Please use the following token to reset your password: ${token}`
