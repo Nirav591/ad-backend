@@ -32,20 +32,7 @@ exports.register = (req, res) => {
     User.create(newUser, (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      // Send verification email
-      const token = jwt.sign({ email }, "your_jwt_secret", { expiresIn: '1h' });
-
-      const mailOptions = {
-        from: "nirav@unize.co.in",
-        to: email,
-        subject: 'Verify your email',
-        text: `Click this link to verify your email: https://advocate.unize.co.in/api/auth/verify-email?token=${token}`
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) return res.status(500).json({ error: error.message });
-        res.status(201).json({ message: 'User registered. Verification email sent.' });
-      });
+      res.status(201).json({ message: 'User registered successfully.' });
     });
   });
 };
@@ -62,7 +49,7 @@ exports.login = (req, res) => {
     const isPasswordValid = bcrypt.compareSync(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ id: user.id }, "your_jwt_secret", { expiresIn: '24h' });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     res.status(200).json({ message: "Login successful", token });
   });
@@ -75,13 +62,13 @@ exports.forgotPassword = (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     if (results.length === 0) return res.status(400).json({ message: "User not found" });
 
-    const token = jwt.sign({ email }, "your_jwt_secret", { expiresIn: '1h' });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     const mailOptions = {
-      from: "nirav@unize.co.in",
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Reset your password',
-      text: `Click this link to reset your password: https://advocate.unize.co.in/api/auth/reset-password?token=${token}`
+      text: `Click this link to reset your password: ${process.env.BASE_URL}/reset-password?token=${token}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -98,7 +85,7 @@ exports.resetPassword = (req, res) => {
     return res.status(400).json({ message: "Passwords do not match" });
   }
 
-  jwt.verify(token, "your_jwt_secret", (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(400).json({ message: "Invalid or expired token" });
 
     const email = decoded.email;
