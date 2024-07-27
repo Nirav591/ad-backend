@@ -30,6 +30,7 @@ app.use(bodyParser.json());
 
 // Route middlewares
 app.use('/api', superadminRoutes);
+app.use('/api/auth', superadminRoutes);
 
 const PORT =  6315;
 app.listen(PORT, () => {
