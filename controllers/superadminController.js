@@ -103,7 +103,7 @@ exports.requestPasswordReset = (req, res) => {
       const resetUrl = `https://advocate.unize.co.in/reset-password?token=${resetToken}`;
       const mailOptions = {
         to: email,
-        from: "79623e001@smtp-brevo.com",
+        from: "unizeinventiv@gmail.com",
         subject: 'Password Reset Request',
         text: `To reset your password, click the following link: ${resetUrl}`,
       };
