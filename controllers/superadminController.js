@@ -3,13 +3,17 @@ const Superadmin = require('../models/Superadmin');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
+
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp-relay.brevo.com",
+  port: 587,
   auth: {
-    user: "unizeinventiv@gmail.com",
-    pass: "Unize@5916310",
-  }
+    user: "79623e001@smtp-brevo.com",
+    pass: "HhPTI91mOfkWL4FC",
+  },
 });
+
 
 exports.createSuperadmin = (req, res) => {
   const { name, email, phone, username, password, confirmPassword, plan, added_by } = req.body;
@@ -70,6 +74,7 @@ exports.getAllSuperadmins = (req, res) => {
   });
 };
 
+
 exports.requestPasswordReset = (req, res) => {
   const { email } = req.body;
 
@@ -98,10 +103,9 @@ exports.requestPasswordReset = (req, res) => {
       const resetUrl = `https://advocate.unize.co.in/reset-password?token=${resetToken}`;
       const mailOptions = {
         to: email,
-        from: "unizeinventiv@gmail.com",
+        from: "79623e001@smtp-brevo.com",
         subject: 'Password Reset Request',
         text: `To reset your password, click the following link: ${resetUrl}`,
-        html: `<b>To reset your password, click the following link: ${resetUrl}</b>`
       };
 
       transporter.sendMail(mailOptions, (err) => {
