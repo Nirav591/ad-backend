@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const superadminRoutes = require('./routes/superadminRoutes');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 require('dotenv').config();
 
@@ -31,7 +31,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Route middlewares
-app.use('/api', superadminRoutes);
+app.use('/api', userRoutes);
 app.use('/api/auth', authRoutes);
 
 const PORT =  6315;
