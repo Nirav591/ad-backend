@@ -6,12 +6,28 @@ const bcrypt = require('bcryptjs');
 const register = async (req, res) => {
   const { email, username, password, confirmPassword, type } = req.body;
 
+  // Check if passwords match
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match' });
   }
 
   try {
-    await User.create({ email, username, password, type });
+    // Check if email or username already exists
+    const [existingEmail] = await User.findByEmail(email);
+    if (existingEmail.length > 0) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    const [existingUsername] = await User.findByUsername(username);
+    if (existingUsername.length > 0) {
+      return res.status(400).json({ message: 'Username already in use' });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    await User.create({ email, username, password: hashedPassword, type });
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error registering user', error });
