@@ -9,13 +9,7 @@ const User = {
       [user.email, user.username, hashedPassword, user.type]
     );
   },
-  
-  create: (userData) => {
-    return db.execute(
-      'INSERT INTO users (email, username, password, type) VALUES (?, ?, ?, ?)',
-      [userData.email, userData.username, userData.password, userData.type]
-    );
-  },
+
 
   findByEmail: (email) => {
     return db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
