@@ -31,7 +31,6 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Route middlewares
-app.use('/api', userRoutes);
 app.use('/api/auth', authRoutes);
 
 const PORT =  6315;
