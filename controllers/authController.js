@@ -32,7 +32,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env."your_jwt_secret", { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, "your_jwt_secret", { expiresIn: '1h' });
     res.json({ token });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -48,7 +48,7 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const resetToken = jwt.sign({ userId: user.id }, process.env."your_jwt_secret", { expiresIn: '1h' });
+    const resetToken = jwt.sign({ userId: user.id }, "your_jwt_secret", { expiresIn: '1h' });
     const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     await transporter.sendMail({

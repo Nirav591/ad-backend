@@ -1,4 +1,4 @@
 module.exports = {
-  secret: process.env."your_jwt_secret" || 'yoursecretkey',
+  secret: "your_jwt_secret" ,
   expiresIn: '1h',
 };
