@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { createUser, getUserByEmail } = require('../models/userModel');
+const { createUser, getUserByEmail, getUserByUsername } = require('../models/userModel');
 const transporter = require('../config/nodemailer');
 
 const register = async (req, res) => {
@@ -11,9 +11,17 @@ const register = async (req, res) => {
   }
 
   try {
-    const existingUser = await getUserByEmail(email);
-    if (existingUser) {
+    const [existingUserByEmail, existingUserByUsername] = await Promise.all([
+      getUserByEmail(email),
+      getUserByUsername(username)
+    ]);
+
+    if (existingUserByEmail) {
       return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    if (existingUserByUsername) {
+      return res.status(400).json({ message: 'Username already in use' });
     }
 
     const userId = await createUser(email, username, password, type);
@@ -28,11 +36,16 @@ const login = async (req, res) => {
 
   try {
     const user = await getUserByEmail(email);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user.id }, "your_jwt_secret", { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -48,7 +61,7 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const resetToken = jwt.sign({ userId: user.id }, "your_jwt_secret", { expiresIn: '1h' });
+    const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
 
     await transporter.sendMail({
