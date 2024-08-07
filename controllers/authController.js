@@ -24,8 +24,13 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'Username already in use' });
     }
 
+    // Create user and hash the password
     const userId = await createUser(email, username, password, type);
-    res.status(201).json({ message: 'User registered successfully', userId });
+
+    // Generate JWT token
+    const token = jwt.sign({ userId }, "your_jwt_secret", { expiresIn: '1h' });
+
+    res.status(201).json({ message: 'User registered successfully', userId, token });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
