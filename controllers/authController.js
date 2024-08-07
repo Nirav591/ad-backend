@@ -40,22 +40,27 @@ const login = async (req, res) => {
 
   try {
     const [rows] = await User.findByEmail(email);
+    console.log('User data:', rows); // Log retrieved data
     if (!rows || rows.length === 0) {
       return res.status(400).json({ message: 'User not found' });
     }
 
     const user = rows[0];
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log('Password match:', isMatch); // Log password match status
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const token = jwt.sign({ id: user.id, type: user.type }, secret, { expiresIn: '1h' });
+    console.log('Generated token:', token); // Log the token
     res.json({ token });
   } catch (error) {
+    console.error('Error logging in:', error); // Log the error
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
+
 
 // Reset and Forgot password functionalities would be implemented here
 
