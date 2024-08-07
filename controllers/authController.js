@@ -36,22 +36,28 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-
+  
   try {
     const [rows] = await User.findByEmail(email);
-    if (rows.length === 0) {
+    console.log('User query result:', rows);
+    
+    if (!rows || rows.length === 0) {
       return res.status(400).json({ message: 'User not found' });
     }
-
+    
     const user = rows[0];
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log('Password match:', isMatch);
+    
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-
+    
     const token = jwt.sign({ id: user.id, type: user.type }, secret, { expiresIn: '1h' });
+    console.log('Generated token:', token);
     res.json({ token });
   } catch (error) {
+    console.error('Error logging in:', error);
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
