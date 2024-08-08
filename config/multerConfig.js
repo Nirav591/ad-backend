@@ -1,5 +1,5 @@
 const express = require('express');
-const upload = require('./path/to/uploadConfig'); // Your multer configuration file
+const upload = require('./uploadConfig'); // Your multer configuration file
 const fs = require('fs');
 const path = require('path');
 
