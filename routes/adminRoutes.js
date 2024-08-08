@@ -1,5 +1,7 @@
 const express = require('express');
 const { addAdmin } = require('../controllers/adminController');
+const upload = require('../config/multerConfig');
+
 
 const router = express.Router();
 
