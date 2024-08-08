@@ -1,10 +1,21 @@
 const moment = require('moment-timezone');
 const { insertAdmin } = require('../models/adminModel');
 const { hashPassword } = require('../utils/helpers');
+const { getAdminByDetails, insertAdmin } = require('../models/adminModel');
 
 const addAdmin = async (req, res) => {
   try {
     const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_image, user_name, admin_password, status, userId } = req.body;
+
+    // Check if an admin with the same details already exists
+    const existingAdmin = await getAdminByDetails(admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name);
+    
+    if (existingAdmin) {
+      return res.status(400).json({
+        status: 1,
+        message: 'An admin with the same details already exists',
+      });
+    }
 
     // Hash password
     const hashedPassword = await hashPassword(admin_password);
