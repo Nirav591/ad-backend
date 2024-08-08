@@ -1,5 +1,4 @@
 const moment = require('moment-timezone');
-const { insertAdmin } = require('../models/adminModel');
 const { hashPassword } = require('../utils/helpers');
 const { getAdminByDetails, insertAdmin } = require('../models/adminModel');
 
