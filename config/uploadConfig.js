@@ -1,32 +1,81 @@
-const multer = require('multer');
+const moment = require('moment-timezone');
+const { hashPassword } = require('../utils/helpers');
+const { getAdminByDetails, insertAdmin } = require('../models/adminModel');
 const path = require('path');
 
-// Set up storage engine
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Folder to store the images
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Append date to original filename
-  }
-});
+// Directory where uploaded files are stored
+const uploadDir = path.join(__dirname, '../uploads');
 
-// Initialize upload variable with multer configuration
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
-  fileFilter: (req, file, cb) => {
-    // Check file type
-    const filetypes = /jpeg|jpg|png/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+const addAdmin = async (req, res) => {
+  try {
+    const {
+      admin_firstname,
+      admin_lastname,
+      admin_email_address,
+      admin_phoneno,
+      user_name,
+      admin_password,
+      status,
+    } = req.body;
 
-    if (extname && mimetype) {
-      return cb(null, true);
-    } else {
-      cb('Error: Images Only!');
+    // Check if the file exists
+    const userImageFile = req.file;
+
+    // Validate fields
+    if (!admin_firstname || !admin_lastname || !admin_email_address || !admin_phoneno || !user_name || !admin_password || status === undefined) {
+      return res.status(400).json({
+        status: 1,
+        message: 'Missing required fields',
+      });
     }
-  }
-});
 
-module.exports = upload;
+    // Check if an admin with the same details already exists
+    const existingAdmin = await getAdminByDetails(admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name);
+    
+    if (existingAdmin) {
+      return res.status(400).json({
+        status: 1,
+        message: 'An admin with the same details already exists',
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(admin_password);
+
+    // Prepare data for insertion
+    const insert_data = {
+      admin_firstname,
+      admin_lastname,
+      admin_email_address,
+      admin_phoneno,
+      user_image: userImageFile ? `/uploads/${userImageFile.filename}` : null, // Set image URL or null if no image
+      user_name,
+      admin_password: hashedPassword,
+      status,
+      date_added: moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss'),
+    };
+
+    // Insert data into the database
+    const result = await insertAdmin(insert_data);
+
+    // Send response
+    return res.status(201).json({
+      status: 0,
+      message: 'User added successfully',
+      data: {
+        insertId: result.insertId, // This is the auto-generated userId from the database
+        imageUrl: insert_data.user_image, // Include image URL in the response
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: 1,
+      message: 'Error adding user',
+      error: err.message,
+    });
+  }
+};
+
+module.exports = {
+  addAdmin,
+};
