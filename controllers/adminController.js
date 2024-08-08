@@ -4,12 +4,17 @@ const { getAdminByDetails, insertAdmin } = require('../models/adminModel');
 const path = require('path');
 const fs = require('fs');
 
-// Utility function to get the URL or Base64 representation of the image
-const getImageData = (file) => {
-  const filePath = path.join(__dirname, '../uploads', file.filename);
-  const imageBase64 = fs.readFileSync(filePath).toString('base64');
-  const imageUrl = `/uploads/${file.filename}`; // URL for serving the image
-  return { imageBase64, imageUrl };
+// Utility function to decode Base64 image
+const decodeBase64Image = (base64Str) => {
+  const matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+  if (matches.length !== 3) {
+    throw new Error('Invalid input string');
+  }
+
+  return {
+    type: matches[1],
+    data: Buffer.from(matches[2], 'base64')
+  };
 };
 
 const addAdmin = async (req, res) => {
@@ -22,10 +27,8 @@ const addAdmin = async (req, res) => {
       user_name,
       admin_password,
       status,
+      user_image_base64, // Base64 image data
     } = req.body;
-
-    // Check if the file exists
-    const userImageFile = req.file;
 
     // Validate fields
     if (!admin_firstname || !admin_lastname || !admin_email_address || !admin_phoneno || !user_name || !admin_password || status === undefined) {
@@ -48,13 +51,26 @@ const addAdmin = async (req, res) => {
     // Hash password
     const hashedPassword = await hashPassword(admin_password);
 
+    // Decode Base64 image and save to file system if provided
+    let imageUrl = null;
+    if (user_image_base64) {
+      const { data, type } = decodeBase64Image(user_image_base64);
+      const extension = type.split('/')[1]; // Get file extension from MIME type
+      const fileName = `${Date.now()}.${extension}`; // Create a unique file name
+      const filePath = path.join(__dirname, '../uploads', fileName);
+
+      // Save the image to the file system
+      fs.writeFileSync(filePath, data);
+      imageUrl = `/uploads/${fileName}`; // URL for serving the image
+    }
+
     // Prepare data for insertion
     const insert_data = {
       admin_firstname,
       admin_lastname,
       admin_email_address,
       admin_phoneno,
-      user_image: userImageFile ? `/uploads/${userImageFile.filename}` : null, // Set image URL or null if no image
+      user_image: imageUrl, // Set image URL or null if no image
       user_name,
       admin_password: hashedPassword,
       status,
