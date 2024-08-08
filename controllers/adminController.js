@@ -1,6 +1,16 @@
 const moment = require('moment-timezone');
 const { hashPassword } = require('../utils/helpers');
 const { getAdminByDetails, insertAdmin } = require('../models/adminModel');
+const path = require('path');
+const fs = require('fs');
+
+// Utility function to get the URL or Base64 representation of the image
+const getImageData = (file) => {
+  const filePath = path.join(__dirname, '../uploads', file.filename);
+  const imageBase64 = fs.readFileSync(filePath).toString('base64');
+  const imageUrl = `/uploads/${file.filename}`; // URL for serving the image
+  return { imageBase64, imageUrl };
+};
 
 const addAdmin = async (req, res) => {
   try {
@@ -9,12 +19,14 @@ const addAdmin = async (req, res) => {
       admin_lastname,
       admin_email_address,
       admin_phoneno,
-      user_image,
       user_name,
       admin_password,
       status,
       userId,
     } = req.body;
+
+    // Check if the file exists
+    const userImageFile = req.file;
 
     // Validate fields
     if (!admin_firstname || !admin_lastname || !admin_email_address || !admin_phoneno || !user_name || !admin_password || status === undefined || !userId) {
@@ -43,7 +55,7 @@ const addAdmin = async (req, res) => {
       admin_lastname,
       admin_email_address,
       admin_phoneno,
-      user_image,
+      user_image: userImageFile ? `/uploads/${userImageFile.filename}` : null, // Set image URL or null if no image
       user_name,
       admin_password: hashedPassword,
       status,
@@ -60,6 +72,7 @@ const addAdmin = async (req, res) => {
       message: 'User added successfully',
       data: {
         insertId: result.insertId, // This is the auto-generated userId
+        imageUrl: insert_data.user_image, // Include image URL in the response
       },
     });
   } catch (err) {
@@ -70,7 +83,6 @@ const addAdmin = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   addAdmin,
