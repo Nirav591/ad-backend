@@ -31,7 +31,7 @@ const addAdmin = async (req, res) => {
       status: 0,
       message: 'User added successfully',
       data: {
-        insertId: result.insertId,
+        insertId: result.insertId, // This is the auto-generated userId
       },
     });
   } catch (err) {
