@@ -4,7 +4,10 @@ const { getAdminByDetails, insertAdmin } = require('../models/adminModel');
 
 const addAdmin = async (req, res) => {
   try {
-    const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_image, user_name, admin_password, status, userId } = req.body;
+    const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name, admin_password, status, userId } = req.body;
+    
+    // Get the path of the uploaded image
+    const user_image = req.file ? req.file.path : null;
 
     // Check if an admin with the same details already exists
     const existingAdmin = await getAdminByDetails(admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name);
@@ -16,7 +19,7 @@ const addAdmin = async (req, res) => {
       });
     }
 
-    // Hash password
+    // Hash the password
     const hashedPassword = await hashPassword(admin_password);
 
     // Prepare data for insertion
@@ -25,7 +28,7 @@ const addAdmin = async (req, res) => {
       admin_lastname,
       admin_email_address,
       admin_phoneno,
-      user_image,
+      user_image, // Save the image path
       user_name,
       admin_password: hashedPassword,
       status,
@@ -33,7 +36,7 @@ const addAdmin = async (req, res) => {
       date_added: moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss'),
     };
 
-    // Insert data into the database
+    // Insert the data into the database
     const result = await insertAdmin(insert_data);
 
     // Send response
@@ -41,7 +44,7 @@ const addAdmin = async (req, res) => {
       status: 0,
       message: 'User added successfully',
       data: {
-        insertId: result.insertId, // This is the auto-generated userId
+        insertId: result.insertId, // The auto-generated userId
       },
     });
   } catch (err) {
