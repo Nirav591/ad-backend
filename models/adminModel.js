@@ -29,7 +29,7 @@ const insertAdmin = (data) => {
 
 
 const getAdminByDetails = async (admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name) => {
-  const [rows] = await pool.query(
+  const [rows] = await db.query(
     'SELECT * FROM admins WHERE admin_firstname = ? AND admin_lastname = ? AND admin_email_address = ? AND admin_phoneno = ? AND user_name = ?',
     [admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name]
   );
