@@ -22,14 +22,13 @@ const addAdmin = async (req, res) => {
       user_name,
       admin_password,
       status,
-      userId,
     } = req.body;
 
     // Check if the file exists
     const userImageFile = req.file;
 
     // Validate fields
-    if (!admin_firstname || !admin_lastname || !admin_email_address || !admin_phoneno || !user_name || !admin_password || status === undefined || !userId) {
+    if (!admin_firstname || !admin_lastname || !admin_email_address || !admin_phoneno || !user_name || !admin_password || status === undefined) {
       return res.status(400).json({
         status: 1,
         message: 'Missing required fields',
@@ -59,7 +58,6 @@ const addAdmin = async (req, res) => {
       user_name,
       admin_password: hashedPassword,
       status,
-      added_by: userId,
       date_added: moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss'),
     };
 
@@ -71,7 +69,7 @@ const addAdmin = async (req, res) => {
       status: 0,
       message: 'User added successfully',
       data: {
-        insertId: result.insertId, // This is the auto-generated userId
+        insertId: result.insertId, // This is the auto-generated userId from the database
         imageUrl: insert_data.user_image, // Include image URL in the response
       },
     });
