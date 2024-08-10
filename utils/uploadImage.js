@@ -10,8 +10,7 @@ const uploadSameTypeInServer = async (request, ImageLocation = '', base64 = '') 
   var buf = Buffer.from(base64, 'base64');
 
   const UploadActName = 'account1';
-  const uploadDirectory = path.join(__dirname, '..', 'uploads', UploadActName, ImageLocation);
-
+  const uploadDirectory = path.join(__dirname, '..' , 'uploads', UploadActName, ImageLocation);
 
   console.log(uploadDirectory, "uploadDirectory");
 
