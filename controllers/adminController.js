@@ -5,6 +5,19 @@ const responseHandler = require('../utils/responseHandler');
 const createAdmin = async (req, res) => {
   try {
     const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name, admin_password, status } = req.body;
+
+    // Check if email already exists
+    const existingAdmin = await new Promise((resolve, reject) => {
+      Admin.findByEmail(admin_email_address, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+
+    if (existingAdmin.length > 0) {
+      return responseHandler(res, 400, 'Email already in use');
+    }
+
     const hashedPassword = await bcrypt.hash(admin_password, 10);
     
     const newAdmin = {
