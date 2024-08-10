@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
-
 require('dotenv').config();
 
 const app = express();
@@ -33,7 +32,8 @@ app.use(bodyParser.json());
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
-app.use('/api', adminRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 
 const PORT =  6315;
