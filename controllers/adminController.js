@@ -1,15 +1,14 @@
 const insertTable = require('../utils/insertTable');
 const moment = require('moment-timezone');
-const uploadSameTypeInServer = require('../utils/uploadImage')
+const uploadSameTypeInServer = require('../utils/uploadImage');
 
-
-// Handle insertion of admin data
 const addAdmin = async (req, res) => {
   try {
     const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name, admin_password, status } = req.body;
-    const ImageName = await uploadSameTypeInServer(req, 'user', req.base64);
+    const base64Image = req.body.base64; // Assuming base64 is in request body
+    const ImageName = await uploadSameTypeInServer(req, 'user', base64Image);
 
-    console.log(ImageName , "ImageName");
+    console.log(ImageName, "ImageName");
 
     const data = {
       admin_firstname,
