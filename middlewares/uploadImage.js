@@ -5,7 +5,7 @@ const getCurrentTimestamp = () => {
 };
 
 
-Common.uploadSameTypeInServer = async (request, ImageLocation = '') => {
+const uploadSameTypeInServer = async (request, ImageLocation = '') => {
   var buf = Buffer.from(request.base64, 'base64');
 
   if (request.base64) {
@@ -13,7 +13,7 @@ Common.uploadSameTypeInServer = async (request, ImageLocation = '') => {
 
 
     const UploadActName = 'account1';
-    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads', UploadActName, ImageLocation);
+    const uploadDirectory = path.join(__dirname, '.', '..', 'uploads', UploadActName, ImageLocation);
 
 
     let ImageName = getCurrentTimestamp + '.png';
