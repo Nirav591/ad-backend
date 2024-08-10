@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
-const adminRoutes = require('./routes/adminRoutes');
 
 require('dotenv').config();
 
@@ -32,7 +31,6 @@ app.use(bodyParser.json());
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
 
 
 
