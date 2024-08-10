@@ -2,10 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
 
 require('dotenv').config();
 
 const app = express();
+
+
 
 // List of allowed origins
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:3032'];
@@ -28,9 +32,13 @@ app.use(cors(corsOptions));
 
 // Use body-parser middleware
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
+app.use('/admin', adminRoutes);
+
 
 
 
