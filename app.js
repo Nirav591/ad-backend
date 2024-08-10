@@ -31,8 +31,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Use body-parser middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+
 app.use(express.urlencoded({ extended: true }));
+
+
 
 
 // Route middlewares
@@ -40,7 +43,31 @@ app.use('/api/auth', authRoutes);
 app.use('/admin', adminRoutes);
 
 
+app.post('/upload', (req, res) => {
+  const { imageBase64, fileName } = req.body;
 
+  if (!imageBase64 || !fileName) {
+      return res.status(400).json({ error: 'Image data and file name are required' });
+  }
+
+  // Decode Base64 image
+  const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+  const buffer = Buffer.from(base64Data, 'base64');
+
+  // Save the image to the filesystem
+  const filePath = path.join(__dirname, 'uploads', fileName);
+
+  fs.writeFile(filePath, buffer, (err) => {
+      if (err) {
+          return res.status(500).json({ error: 'Failed to save image' });
+      }
+      res.status(200).json({ message: 'Image uploaded successfully' });
+  });
+});
+
+if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
+  fs.mkdirSync(path.join(__dirname, 'uploads'));
+}
 
 
 
