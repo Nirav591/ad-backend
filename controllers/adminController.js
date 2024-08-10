@@ -1,6 +1,7 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const responseHandler = require('../utils/responseHandler');
+const uploadSameTypeInServer = require('../middlewares/uploadImage')
 
 const createAdmin = async (req, res) => {
   try {
@@ -20,12 +21,15 @@ const createAdmin = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(admin_password, 10);
     
+    const imageUser =uploadSameTypeInServer(request, "user" )
+
+
     const newAdmin = {
       admin_firstname,
       admin_lastname,
       admin_email_address,
       admin_phoneno,
-      user_image: req.file ? req.file.path : null,
+      user_image: imageUser,
       user_name,
       admin_password: hashedPassword,
       status,

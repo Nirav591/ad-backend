@@ -4,6 +4,6 @@ const adminController = require('../controllers/adminController');
 const validateAdminData = require('../middlewares/validateAdminData');
 const uploadImage = require('../middlewares/uploadImage');
 
-router.post('/create', uploadImage, validateAdminData, adminController.createAdmin);
+router.post('/create',  validateAdminData, adminController.createAdmin);
 
 module.exports = router;
