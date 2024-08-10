@@ -1,34 +1,18 @@
+const multer = require('multer');
+const storage = multer.memoryStorage(); // Store the file in memory
+const uploadImage = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: function (req, file, cb) {
+    const filetypes = /jpeg|jpg|png/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
-
-const getCurrentTimestamp = () => {
-  return moment().format('YYYYMMDDHHmmss');
-};
-
-
-const uploadSameTypeInServer = async (request, ImageLocation = '') => {
-  var buf = Buffer.from(request.base64, 'base64');
-
-  if (request.base64) {
-
-
-
-    const UploadActName = 'account1';
-    const uploadDirectory = path.join(__dirname, '.', '..', 'uploads', UploadActName, ImageLocation);
-
-
-    let ImageName = getCurrentTimestamp + '.png';
-    let ImagePath = path.join(uploadDirectory, ImageName);
-    return new Promise(resolve => {
-      fs.writeFile(ImagePath, buf, function (err, res) {
-        if (err) {
-          console.log(err);
-          console.log(err);
-          return resolve('');
-        } else {
-          return resolve(ImageName);
-        }
-      });
-    });
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb('Error: File upload only supports the following filetypes - ' + filetypes);
   }
+}).single('user_image');
 
-}
+module.exports = uploadImage;

@@ -1,7 +1,8 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 const responseHandler = require('../utils/responseHandler');
-const uploadSameTypeInServer = require('../middlewares/uploadImage')
+const Common = require('../utils/Common'); // Assuming this is where the uploadSameTypeInServer function is defined
+const path = require('path');
 
 const createAdmin = async (req, res) => {
   try {
@@ -21,15 +22,20 @@ const createAdmin = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(admin_password, 10);
     
-    const imageUser =uploadSameTypeInServer(request, "user" )
-
+    // Handle image upload
+    let userImage = null;
+    if (req.file) {
+      const base64Image = req.file.buffer.toString('base64');
+      const imageName = `${Date.now()}${path.extname(req.file.originalname)}`;
+      userImage = await Common.uploadSameTypeInServer(req, 'admin_images', base64Image, imageName);
+    }
 
     const newAdmin = {
       admin_firstname,
       admin_lastname,
       admin_email_address,
       admin_phoneno,
-      user_image: imageUser,
+      user_image: userImage,
       user_name,
       admin_password: hashedPassword,
       status,
