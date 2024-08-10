@@ -1,7 +1,7 @@
-const Admin = require('../models/Admin');
+const Admin = require('../models/Admin'); // Assuming this is your model
 const bcrypt = require('bcrypt');
 const responseHandler = require('../utils/responseHandler');
-const Common = require('../utils/Common'); // Assuming this is where the uploadSameTypeInServer function is defined
+const Common = require('../utils/Common'); // Your custom utility functions
 const path = require('path');
 
 const createAdmin = async (req, res) => {
