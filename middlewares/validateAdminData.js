@@ -1,13 +1,13 @@
-const { body, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 const validateAdminData = [
-  body('admin_firstname').isString().isLength({ min: 2 }),
-  body('admin_lastname').isString().isLength({ min: 2 }),
-  body('admin_email_address').isEmail(),
-  body('admin_phoneno').isNumeric().isLength({ min: 10, max: 10 }),
-  body('user_name').isString().isLength({ min: 5 }),
-  body('admin_password').isString().isLength({ min: 8 }),
-  body('status').isIn([0, 1]),
+  check('admin_firstname').isString().withMessage('First name must be a string'),
+  check('admin_lastname').isString().withMessage('Last name must be a string'),
+  check('admin_email_address').isEmail().withMessage('Must be a valid email address'),
+  check('admin_phoneno').isMobilePhone().withMessage('Must be a valid phone number'),
+  check('user_name').isString().withMessage('Username must be a string'),
+  check('admin_password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  check('status').isIn(['active', 'inactive']).withMessage('Status must be either "active" or "inactive"'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
