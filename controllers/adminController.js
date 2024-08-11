@@ -1,3 +1,9 @@
+const insertTable = require('../utils/insertTable');
+const moment = require('moment-timezone');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
+
 const addAdmin = async (req, res) => {
   try {
     const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name, admin_password, status } = req.body;
@@ -47,13 +53,14 @@ const addAdmin = async (req, res) => {
       }
     });
   } catch (error) {
-    if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ message: 'File size exceeds the limit of 2MB' });
-    }
     res.status(500).json({
       status: 1,
       message: 'Error adding user',
       error: error.message
     });
   }
+};
+
+module.exports = {
+  addAdmin
 };

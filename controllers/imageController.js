@@ -1,6 +1,4 @@
-const path = require('path');
-const fs = require('fs');
-const sharp = require('sharp');
+const imageToBase64 = require('../utils/base64ToImage');
 
 exports.uploadImage = async (req, res) => {
     try {
@@ -8,24 +6,11 @@ exports.uploadImage = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        // Define the upload path
-        const uploadPath = path.join(__dirname, '../upload');
-        
-        // Ensure the upload directory exists
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
+        // Convert image to Base64
+        const base64Image = await imageToBase64(req.file.buffer);
 
-        // Generate a unique filename with PNG extension
-        const filename = `${Date.now()}.png`;
-
-        // Save the image as a PNG file
-        await sharp(req.file.buffer)
-            .png()
-            .toFile(path.join(uploadPath, filename));
-
-        // Return the file path or any other response
-        res.status(200).json({ message: 'Image uploaded successfully', filename });
+        // Return the Base64 string or save it to the database
+        res.status(200).json({ base64Image });
     } catch (error) {
         res.status(500).json({ message: 'Server Error', error });
     }
