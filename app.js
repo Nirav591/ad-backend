@@ -37,6 +37,9 @@ app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/uploads', express.static(path.join(__dirname, 'upload')));
+
+
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
