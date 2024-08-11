@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const imageRoutes = require('./routes/imageRoutes');
+
 
 
 require('dotenv').config();
@@ -39,6 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 // Route middlewares
 app.use('/api/auth', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/api/images', imageRoutes);
+
 
 
 
