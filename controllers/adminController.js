@@ -1,12 +1,58 @@
+const { body, validationResult } = require('express-validator');
 const insertTable = require('../utils/insertTable');
 const moment = require('moment-timezone');
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
+const db = require('../config/db'); // Assuming you have a DB connection module
 
 const addAdmin = async (req, res) => {
+  // Validate incoming request
+  await body('admin_firstname').notEmpty().withMessage('First name is required').run(req);
+  await body('admin_email_address').isEmail().withMessage('Valid email is required').run(req);
+  await body('admin_phoneno').isMobilePhone().withMessage('Valid phone number is required').run(req);
+  await body('user_name').notEmpty().withMessage('Username is required').run(req);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name, admin_password, status } = req.body;
+
   try {
-    const { admin_firstname, admin_lastname, admin_email_address, admin_phoneno, user_name, admin_password, status } = req.body;
+    // Check for duplicates in the database for each field
+    let [existingAdmin] = await db.query(
+      'SELECT * FROM admins WHERE admin_firstname = ?',
+      [admin_firstname]
+    );
+    if (existingAdmin.length > 0) {
+      return res.status(400).json({ message: 'First name already exists' });
+    }
+
+    [existingAdmin] = await db.query(
+      'SELECT * FROM admins WHERE admin_email_address = ?',
+      [admin_email_address]
+    );
+    if (existingAdmin.length > 0) {
+      return res.status(400).json({ message: 'Email address already exists' });
+    }
+
+    [existingAdmin] = await db.query(
+      'SELECT * FROM admins WHERE admin_phoneno = ?',
+      [admin_phoneno]
+    );
+    if (existingAdmin.length > 0) {
+      return res.status(400).json({ message: 'Phone number already exists' });
+    }
+
+    [existingAdmin] = await db.query(
+      'SELECT * FROM admins WHERE user_name = ?',
+      [user_name]
+    );
+    if (existingAdmin.length > 0) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
 
     // Check if an image is uploaded
     if (!req.file) {
