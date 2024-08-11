@@ -118,10 +118,14 @@ const getAdminById = async (req, res) => {
       return res.status(404).json({ message: 'Admin not found' });
     }
 
+    // Generate the image URL
+    const admin = result[0];
+    admin.user_image_url = `https://advocate.unize.co.in/upload/${admin.user_image}`;
+
     res.json({
       status: 0,
       message: 'Admin details retrieved successfully',
-      data: result[0]
+      data: admin
     });
   } catch (error) {
     res.status(500).json({
@@ -131,7 +135,6 @@ const getAdminById = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   addAdmin,
