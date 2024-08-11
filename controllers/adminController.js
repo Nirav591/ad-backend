@@ -107,6 +107,33 @@ const addAdmin = async (req, res) => {
   }
 };
 
+const getAdminById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch admin details by ID from the database
+    const [result] = await db.query('SELECT * FROM admins WHERE id = ?', [id]);
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    res.json({
+      status: 0,
+      message: 'Admin details retrieved successfully',
+      data: result[0]
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 1,
+      message: 'Error retrieving admin details',
+      error: error.message
+    });
+  }
+};
+
+
 module.exports = {
   addAdmin
+  getAdminById
 };
