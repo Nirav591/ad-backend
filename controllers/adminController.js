@@ -134,6 +134,6 @@ const getAdminById = async (req, res) => {
 
 
 module.exports = {
-  addAdmin
+  addAdmin,
   getAdminById
 };
