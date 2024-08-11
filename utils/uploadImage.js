@@ -12,6 +12,8 @@ const uploadSameTypeInServer = async (request, ImageLocation = '', base64 = '') 
   const UploadActName = 'account1';
   const uploadDirectory = path.join(__dirname, '..' , 'uploads', UploadActName, ImageLocation);
 
+  
+
   console.log(uploadDirectory, "uploadDirectory");
 
   let ImageName = `${getCurrentTimestamp()}.png`;
