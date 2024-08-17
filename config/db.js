@@ -6,8 +6,8 @@ dotenv.config();
 
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'root',
-  password: '',
+  user: 'admin',
+  password: 't7x?}>rbmCa~we+',
   database: 'myapp',
   connectionLimit: 10, // Adjust the connection limit as needed
 });
