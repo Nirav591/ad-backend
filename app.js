@@ -6,14 +6,9 @@ const adminRoutes = require('./routes/adminRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const path = require('path');
 
-
-
-
 require('dotenv').config();
 
 const app = express();
-
-
 
 // List of allowed origins
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:3032'];
@@ -39,22 +34,14 @@ app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'upload')));
-
-
+app.use('/upload', express.static(path.join(__dirname, 'upload')));
 
 // Route middlewares
 app.use('/api/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api/images', imageRoutes);
 
-
-
-
-
-
-
-const PORT =  6315;
+const PORT = 6315;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

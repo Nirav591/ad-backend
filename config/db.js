@@ -6,10 +6,10 @@ dotenv.config();
 
 const pool = mysql.createPool({
   host: 'localhost',
-  user:  'admin',
-  password:  't7x?}>rbmCa~we+',
-  database:  'myapp',
-  connectionLimit:  10 // Adjust the connection limit as needed
+  user: 'root',
+  password: '',
+  database: 'myapp',
+  connectionLimit: 10, // Adjust the connection limit as needed
 });
 
 // Promisify the pool for async/await usage

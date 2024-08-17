@@ -20,8 +20,22 @@ const getUserByUsername = async (username) => {
   return rows[0];
 };
 
+// Fetch user by ID
+const getUserById = async (userId) => {
+  const [user] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+  return user[0];
+};
+
+// Fetch all users
+const getAllUsers = async () => {
+  const [users] = await db.query('SELECT * FROM users');
+  return users;
+};
+
 module.exports = {
   createUser,
   getUserByEmail,
-  getUserByUsername
+  getUserByUsername,
+  getUserById,
+  getAllUsers,
 };
