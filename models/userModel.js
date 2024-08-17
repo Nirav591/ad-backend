@@ -29,7 +29,7 @@ const getUserById = async (userId) => {
 // Fetch all users
 const getAllUsers = async () => {
   const [users] = await db.query('SELECT * FROM users');
-  return users;
+  console.log(users, 'users');
 };
 
 module.exports = {
