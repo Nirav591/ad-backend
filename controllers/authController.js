@@ -50,6 +50,8 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    console.log(passwordMatch, 'passwordMatch');
+
     const token = jwt.sign({ userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
     res.json({ token });
   } catch (err) {
